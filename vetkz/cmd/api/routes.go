@@ -13,7 +13,7 @@ func (app *application) routes() *httprouter.Router {
 
 	router.HandlerFunc(http.MethodGet, "/v1/catalog", app.catalogHandler)
 	router.HandlerFunc(http.MethodGet, "/v1/cat/:id", app.showCatHandler)
-	router.HandlerFunc(http.MethodPost, "/v1/cat/:id", app.createCatHandlerCatHandler)
+	router.HandlerFunc(http.MethodPost, "/v1/cat/:id", app.createCatHandler)
 
 	return router
 }
