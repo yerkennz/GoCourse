@@ -18,6 +18,7 @@ func (app *application) showCatHandler(w http.ResponseWriter, r *http.Request) {
 		CreatedAt:         time.Now(),
 		Title:             "СУХОЙ КОРМ",
 		Price:             44410,
+		Product:           "Corm",
 		TypeFeed:          "Сухой корм",
 		AgeCat:            "Взрослые (1 - 7 лет)",
 		SizeCat:           "Породы любого размера",
