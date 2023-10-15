@@ -8,8 +8,7 @@ import (
 func (app *application) routes() *httprouter.Router {
 	router := httprouter.New()
 	router.HandlerFunc(http.MethodGet, "/v1/catalog", app.catalogHandler)
-	router.HandlerFunc(http.MethodPost, "/v1/movies", app.createMovieHandler)
-	router.HandlerFunc(http.MethodGet, "/v1/movies/:id", app.showMovieHandler)
+	router.HandlerFunc(http.MethodGet, "/v1/cat/:id", app.showCatHandler)
 
 	return router
 }
