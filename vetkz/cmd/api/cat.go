@@ -31,7 +31,7 @@ func (app *application) showCatHandler(w http.ResponseWriter, r *http.Request) {
 		Taste:             []string{"Кролик", "Лосось", "Индейка"},
 		Packing:           []string{"400 гр", "1,5 кг"},
 	}
-	err = app.writeJSON(w, http.StatusOK, cat, nil)
+	err = app.writeJSON(w, http.StatusOK, envelope{"cat": cat}, nil)
 	if err != nil {
 		app.logger.Println(err)
 		http.Error(w, "The server encountered a problem and could not process your request", http.StatusInternalServerError)
