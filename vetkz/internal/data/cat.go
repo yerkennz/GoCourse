@@ -84,8 +84,24 @@ func (m CatModel) Insert(cat *Cat) error {
 // Add a placeholder method for fetching a specific record from the movies table.
 
 // Add a placeholder method for updating a specific record in the movies table.
-func (m CatModel) Update(movie *Cat) error {
-	return nil
+func (m CatModel) Update(cat *Cat) error {
+	query := `
+			UPDATE cats
+			SET title = $1, product = $2, price = $3, description = $4, quantity = $5
+			WHERE id = $6
+			RETURNING title`
+	// Create an args slice containing the values for the placeholder parameters.
+	args := []interface{}{
+		cat.Title,
+		cat.Product,
+		cat.Price,
+		cat.Description,
+		cat.Quantity,
+		cat.ID,
+	}
+	// Use the QueryRow() method to execute the query, passing in the args slice as a
+	// variadic parameter and scanning the new version value into the movie struct.
+	return m.DB.QueryRow(query, args...).Scan(&cat.Title)
 }
 
 // Add a placeholder method for deleting a specific record from the movies table.
