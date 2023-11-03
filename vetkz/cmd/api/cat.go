@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	_ "github.com/lib/pq"
 	"net/http"
 	"time"
 	"vetkz.yerkennz.net/internal/data"
@@ -27,7 +28,43 @@ func (app *application) createCatHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	fmt.Fprintf(w, "%+v\n", input)
+	cat := &data.Cat{
+		Title:         input.Title,
+		Product:       input.Product,
+		Price:         input.Price,
+		AgeCat:        input.AgeCat,
+		SizeCat:       input.SizeCat,
+		Breed:         input.Breed,
+		CountryOrigin: input.CountryOrigin,
+		Description:   input.Description,
+		Quantity:      input.Quantity,
+	}
+	//v := validator.New()
+	//if data.ValidateMovie(v, movie); !v.Valid() {
+	//	app.failedValidationResponse(w, r, v.Errors)
+	//	return
+	//}
+	// Call the Insert() method on our movies model, passing in a pointer to the
+	// validated movie struct. This will create a record in the database and update the
+	// movie struct with the system-generated information.
+	err = app.models.Cats.Insert(cat)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+	// When sending a HTTP response, we want to include a Location header to let the
+	// client know which URL they can find the newly-created resource at. We make an
+	// empty http.Header map and then use the Set() method to add a new Location header,
+	// interpolating the system-generated ID for our new movie in the URL.
+	headers := make(http.Header)
+	headers.Set("Location", fmt.Sprintf("/v1/cat/%d", cat.ID))
+	// Write a JSON response with a 201 Created status code, the movie data in the
+	// response body, and the Location header.
+	err = app.writeJSON(w, http.StatusCreated, envelope{"cat": cat}, headers)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+
 }
 
 func (app *application) showCatHandler(w http.ResponseWriter, r *http.Request) {
