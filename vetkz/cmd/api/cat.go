@@ -1,10 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	_ "github.com/lib/pq"
 	"net/http"
-	"time"
 	"vetkz.yerkennz.net/internal/data"
 )
 
@@ -74,18 +74,15 @@ func (app *application) showCatHandler(w http.ResponseWriter, r *http.Request) {
 		app.notFoundResponse(w, r)
 		return
 	}
-	cat := data.Cat{
-		ID:            id,
-		CreatedAt:     time.Now(),
-		Title:         "СУХОЙ КОРМ",
-		Price:         44410,
-		Product:       "Corm",
-		AgeCat:        "Взрослые (1 - 7 лет)",
-		SizeCat:       "Породы любого размера",
-		Breed:         "Любая порода",
-		CountryOrigin: "Россия",
-		Description:   "Void",
-		Quantity:      64,
+	cat, err := app.models.Cats.Get(id)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrRecordNotFound):
+			app.notFoundResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
+		return
 	}
 	err = app.writeJSON(w, http.StatusOK, envelope{"cat": cat}, nil)
 	if err != nil {
