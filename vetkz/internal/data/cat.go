@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -139,16 +140,20 @@ func (m CatModel) Delete(id int64) error {
 
 func (m CatModel) GetAll(title string, product string, description string, filters Filters) ([]*Cat, error) {
 	// Construct the SQL query to retrieve all movie records.
-	query := `
+	query := fmt.Sprintf(`
 			SELECT id, title, product, price, description, quantity
 			FROM cats
-			ORDER BY id`
+			WHERE (LOWER(title) = LOWER($1) OR $1 = '')
+			ORDER BY %s %s, id ASC
+			LIMIT $2 OFFSET $3`, filters.sortColumn(), filters.sortDirection())
+
 	// Create a context with a 3-second timeout.
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	// Use QueryContext() to execute the query. This returns a sql.Rows resultset
 	// containing the result.
-	rows, err := m.DB.QueryContext(ctx, query)
+	args := []interface{}{title, filters.limit(), filters.offset()}
+	rows, err := m.DB.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
