@@ -12,7 +12,6 @@ func (app *application) catalogHandler(w http.ResponseWriter, r *http.Request) {
 			"version":     version,
 		},
 	}
-
 	err := app.writeJSON(w, http.StatusOK, env, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)

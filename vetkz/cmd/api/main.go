@@ -4,9 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"flag"
-	"fmt"
 	_ "github.com/lib/pq"
-	"net/http"
 	"os"
 	"time"
 	"vetkz.yerkennz.net/internal/data"
@@ -75,22 +73,10 @@ func main() {
 		logger: logger,
 		models: data.NewModels(db),
 	}
-
-	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", cfg.port),
-		Handler:      app.routes(),
-		IdleTimeout:  time.Minute,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 30 * time.Second,
+	err = app.serve()
+	if err != nil {
+		logger.PrintFatal(err, nil)
 	}
-
-	logger.PrintInfo("starting server", map[string]string{
-		"addr": srv.Addr,
-		"env":  cfg.env,
-	})
-	err = srv.ListenAndServe()
-	// Use the PrintFatal() method to log the error and exit.
-	logger.PrintFatal(err, nil)
 
 }
 
