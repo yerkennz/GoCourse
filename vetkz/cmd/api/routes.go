@@ -19,6 +19,6 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodPatch, "/v1/cat/:id", app.updateCatHandler)
 	router.HandlerFunc(http.MethodDelete, "/v1/movies/:id", app.deleteCatHandler)
 
-	return app.recoverPanic(router)
+	return app.recoverPanic(app.rateLimit(router))
 
 }
