@@ -6,6 +6,7 @@ import (
 	"flag"
 	_ "github.com/lib/pq"
 	"os"
+	"strings"
 	"sync"
 	"time"
 	"vetkz.yerkennz.net/internal/data"
@@ -36,6 +37,9 @@ type config struct {
 		username string
 		password string
 		sender   string
+	}
+	cors struct {
+		trustedOrigins []string
 	}
 }
 
@@ -69,6 +73,11 @@ func main() {
 	flag.StringVar(&cfg.smtp.username, "smtp-username", "7a099e857e713c", "SMTP username")
 	flag.StringVar(&cfg.smtp.password, "smtp-password", "364e32ec7ce96d", "SMTP password")
 	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "VETKZ <no-reply@vetkz.yerkennz.net>", "SMTP sender")
+
+	flag.Func("cors-trusted-origins", "Trusted CORS origins (space separated)", func(val string) error {
+		cfg.cors.trustedOrigins = strings.Fields(val)
+		return nil
+	})
 
 	flag.Parse()
 
