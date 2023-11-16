@@ -6,6 +6,7 @@ import (
 	"flag"
 	_ "github.com/lib/pq"
 	"os"
+	"sync"
 	"time"
 	"vetkz.yerkennz.net/internal/data"
 	"vetkz.yerkennz.net/internal/jsonlog"
@@ -43,6 +44,7 @@ type application struct {
 	logger *jsonlog.Logger
 	models data.Models
 	mailer mailer.Mailer
+	wg     sync.WaitGroup
 }
 
 func main() {
