@@ -19,7 +19,7 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodPatch, "/v1/cat/:id", app.updateCatHandler)
 	router.HandlerFunc(http.MethodDelete, "/v1/movies/:id", app.deleteCatHandler)
 	router.HandlerFunc(http.MethodPost, "/v1/users", app.registerUserHandler)
-
+	router.HandlerFunc(http.MethodPut, "/v1/users/activated", app.activateUserHandler)
 	return app.recoverPanic(app.rateLimit(router))
 
 }
